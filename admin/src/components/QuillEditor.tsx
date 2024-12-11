@@ -8,6 +8,7 @@ interface QuillEditorProps {
   onChange: (content: string) => void; // Callback to send changes (Markdown or HTML)
   placeholder?: string;
   readOnly?: boolean;
+  disabled?: boolean;
 }
 
 const QuillEditor: React.FC<QuillEditorProps> = ({
