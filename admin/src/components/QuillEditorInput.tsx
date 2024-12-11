@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl';
+import React, { useIntl } from 'react-intl';
 import { useField } from '@strapi/strapi/admin';
 import { Flex } from '@strapi/design-system';
 import { Field } from '@strapi/design-system';

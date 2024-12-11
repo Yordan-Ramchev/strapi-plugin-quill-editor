@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css'; // Import Quill's styles
-import TurndownService from 'turndown'; // Import Turndown for HTML to Markdown conversion
+// import TurndownService from 'turndown'; // For converting HTML to Markdown
+// import marked from 'marked'; // For converting Markdown to HTML
 
 const QuillEditor = ({ value, onChange, placeholder = 'Start typing...', readOnly = false }) => {
   const quillContainerRef = useRef(null); // Ref for the container
   const quillInstanceRef = useRef(null); // Ref for the Quill editor instance
-  const turndownServiceRef = useRef(new TurndownService()); // Turndown service instance
+  // const turndownService = new TurndownService(); // Turndown service for converting HTML to Markdown
 
   useEffect(() => {
     if (!quillInstanceRef.current && quillContainerRef.current) {
@@ -17,14 +18,10 @@ const QuillEditor = ({ value, onChange, placeholder = 'Start typing...', readOnl
         placeholder,
         modules: {
           toolbar: [
-            [{ header: '1' }, { header: '2' }, { font: [] }],
+            [{ header: '2' }, { header: '3' }],
             [{ list: 'ordered' }, { list: 'bullet' }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ color: [] }, { background: [] }],
-            [{ align: [] }],
             ['link', 'image'],
             ['blockquote', 'code-block'],
-            ['clean'],
           ],
         },
       });
@@ -37,11 +34,9 @@ const QuillEditor = ({ value, onChange, placeholder = 'Start typing...', readOnl
       // Handle text changes
       quillInstanceRef.current.on('text-change', () => {
         if (onChange) {
-          const htmlContent = quillInstanceRef.current.root.innerHTML;
-          const markdownContent = turndownServiceRef.current.turndown(htmlContent); // Convert HTML to Markdown
-
-          if (markdownContent !== value) {
-            onChange(markdownContent);
+          const currentContent = quillInstanceRef.current.root.innerHTML;
+          if (currentContent !== value) {
+            onChange(currentContent);
           }
         }
       });
@@ -49,15 +44,9 @@ const QuillEditor = ({ value, onChange, placeholder = 'Start typing...', readOnl
   }, [onChange, placeholder, readOnly]);
 
   useEffect(() => {
-    if (quillInstanceRef.current) {
-      const htmlContent = quillInstanceRef.current.root.innerHTML;
-      const currentMarkdown = turndownServiceRef.current.turndown(htmlContent);
-
-      if (value !== currentMarkdown) {
-        // Update Quill content if external Markdown value changes
-        const htmlFromMarkdown = new TurndownService().turndown(value || '');
-        quillInstanceRef.current.clipboard.dangerouslyPasteHTML(htmlFromMarkdown);
-      }
+    if (quillInstanceRef.current && value !== quillInstanceRef.current.root.innerHTML) {
+      // Update content if value changes externally
+      quillInstanceRef.current.clipboard.dangerouslyPasteHTML(value || '');
     }
   }, [value]);
 
