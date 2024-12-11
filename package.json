@@ -33,6 +33,7 @@
   "dependencies": {
     "@strapi/design-system": "^2.0.0-rc.14",
     "@strapi/icons": "^2.0.0-rc.14",
+    "quill": "^2.0.3",
     "react-intl": "^7.0.4"
   },
   "devDependencies": {

@@ -1,1 +1,1 @@
-export const PLUGIN_ID = 'quill-editor';
+export const PLUGIN_ID = 'strapi-plugin-quill-editor';
