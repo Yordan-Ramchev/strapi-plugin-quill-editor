@@ -17,15 +17,14 @@ import routes from './routes';
 import services from './services';
 
 export default {
+  register,
   bootstrap,
   destroy,
-  register,
-
   config,
   controllers,
-  contentTypes,
-  middlewares,
-  policies,
   routes,
   services,
+  contentTypes,
+  policies,
+  middlewares,
 };

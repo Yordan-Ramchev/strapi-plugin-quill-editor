@@ -2,10 +2,11 @@ import { useEffect, useRef } from 'react';
 
 import { PLUGIN_ID } from '../pluginId';
 
-/**
- * @type {import('react').FC<{ setPlugin: (id: string) => void }>}
- */
-const Initializer = ({ setPlugin }) => {
+type InitializerProps = {
+  setPlugin: (id: string) => void;
+};
+
+const Initializer = ({ setPlugin }: InitializerProps) => {
   const ref = useRef(setPlugin);
 
   useEffect(() => {
