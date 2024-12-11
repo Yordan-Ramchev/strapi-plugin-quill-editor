@@ -1,13 +1,23 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css'; // Import Quill's styles
-// import TurndownService from 'turndown'; // For converting HTML to Markdown
-// import marked from 'marked'; // For converting Markdown to HTML
 
-const QuillEditor = ({ value, onChange, placeholder = 'Start typing...', readOnly = false }) => {
-  const quillContainerRef = useRef(null); // Ref for the container
-  const quillInstanceRef = useRef(null); // Ref for the Quill editor instance
-  // const turndownService = new TurndownService(); // Turndown service for converting HTML to Markdown
+// Type the props explicitly
+interface QuillEditorProps {
+  value: string; // Markdown or HTML content (depending on your approach)
+  onChange: (content: string) => void; // Callback to send changes (Markdown or HTML)
+  placeholder?: string;
+  readOnly?: boolean;
+}
+
+const QuillEditor: React.FC<QuillEditorProps> = ({
+  value,
+  onChange,
+  placeholder = 'Start typing...',
+  readOnly = false,
+}) => {
+  const quillContainerRef = useRef<HTMLDivElement | null>(null); // Ref for the container
+  const quillInstanceRef = useRef<Quill | null>(null); // Ref for the Quill editor instance
 
   useEffect(() => {
     if (!quillInstanceRef.current && quillContainerRef.current) {
@@ -26,22 +36,22 @@ const QuillEditor = ({ value, onChange, placeholder = 'Start typing...', readOnl
         },
       });
 
-      // Set initial content
+      // Set initial content (HTML or Markdown converted to HTML)
       if (value) {
         quillInstanceRef.current.clipboard.dangerouslyPasteHTML(value);
       }
 
       // Handle text changes
       quillInstanceRef.current.on('text-change', () => {
-        if (onChange) {
+        if (onChange && quillInstanceRef.current) {
           const currentContent = quillInstanceRef.current.root.innerHTML;
           if (currentContent !== value) {
-            onChange(currentContent);
+            onChange(currentContent); // Send changes back as HTML or Markdown
           }
         }
       });
     }
-  }, [onChange, placeholder, readOnly]);
+  }, [onChange, placeholder, readOnly, value]);
 
   useEffect(() => {
     if (quillInstanceRef.current && value !== quillInstanceRef.current.root.innerHTML) {
