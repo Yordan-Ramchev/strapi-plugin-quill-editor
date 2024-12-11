@@ -28,10 +28,12 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
         placeholder,
         modules: {
           toolbar: [
-            [{ header: '2' }, { header: '3' }],
-            [{ list: 'ordered' }, { list: 'bullet' }],
+            [{ header: [2, 3, 4, 5, 6, false] }],
             ['link', 'image'],
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
             ['blockquote', 'code-block'],
+            ['clean'],
           ],
         },
       });
