@@ -69,7 +69,8 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       style={{
         height: '450px',
         border: '1px solid #ccc',
-        borderRadius: '4px',
+        fontSize: '18px',
+        lineHeight: '28px',
         backgroundColor: readOnly ? '#f5f5f5' : '#fff',
       }}
     />
