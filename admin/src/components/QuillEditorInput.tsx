@@ -1,64 +1,81 @@
-import React from 'react';
-import { useIntl, IntlShape } from 'react-intl';
-import { useField } from '@strapi/strapi/admin';
-import { Flex } from '@strapi/design-system';
-import { Field } from '@strapi/design-system';
-import { QuillEditor } from './QuillEditor';
+import React, { useEffect, useRef } from 'react';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css'; // Import Quill's styles
 
-interface QuillEditorInputProps {
-  attribute: {
-    type: string;
-  };
-  name: string;
+// Type the props explicitly
+interface QuillEditorProps {
+  value: string; // Content from the database
+  onChange: (content: string) => void; // Callback to send changes
+  placeholder?: string;
+  readOnly?: boolean;
   disabled?: boolean;
-  labelAction?: React.ReactNode;
-  required?: boolean;
-  description?: string;
-  error?: string;
-  intlLabel?: { id: string; defaultMessage?: string };
 }
 
-const QuillEditorInput: React.FC<QuillEditorInputProps> = (props) => {
-  const {
-    attribute,
-    name,
-    disabled = false,
-    labelAction = null,
-    required = false,
-    description = '',
-    error = '',
-    intlLabel,
-  } = props;
+const QuillEditor: React.FC<QuillEditorProps> = ({
+  value,
+  onChange,
+  placeholder = 'Start typing...',
+  readOnly = false,
+}) => {
+  const quillContainerRef = useRef<HTMLDivElement | null>(null); // Ref for the container
+  const quillInstanceRef = useRef<Quill | null>(null); // Ref for the Quill editor instance
 
-  const { onChange, value } = useField(name);
-  const { formatMessage }: IntlShape = useIntl();
+  useEffect(() => {
+    if (!quillInstanceRef.current && quillContainerRef.current) {
+      // Initialize Quill editor only once
+      quillInstanceRef.current = new Quill(quillContainerRef.current, {
+        theme: 'snow',
+        readOnly,
+        placeholder,
+        modules: {
+          toolbar: [
+            [{ header: [2, 3, 4, 5, 6, false] }],
+            ['link', 'image'],
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['blockquote', 'code-block'],
+            ['clean'],
+          ],
+        },
+      });
 
-  const handleEditorChange = (content: string) => {
-    onChange(content);
-  };
+      // Set initial content
+      if (value) {
+        quillInstanceRef.current.clipboard.dangerouslyPasteHTML(value);
+      }
+
+      // Handle text changes
+      quillInstanceRef.current.on('text-change', () => {
+        if (onChange && quillInstanceRef.current) {
+          const currentContent = quillInstanceRef.current.root.innerHTML;
+          if (currentContent !== value) {
+            onChange(currentContent); // Send changes back
+          }
+        }
+      });
+    }
+  }, [onChange, placeholder, readOnly, value]);
+
+  useEffect(() => {
+    if (quillInstanceRef.current) {
+      const currentContent = quillInstanceRef.current.root.innerHTML;
+      if (value !== currentContent) {
+        // Update content if value changes externally
+        quillInstanceRef.current.clipboard.dangerouslyPasteHTML(value || '');
+      }
+    }
+  }, [value]);
 
   return (
-    <Field.Root
-      name={name}
-      id={name}
-      error={error}
-      hint={description && formatMessage({ id: description })}
-    >
-      <Flex spacing={1} alignItems="normal" style={{ flexDirection: 'column' }}>
-        <Field.Label action={labelAction} required={required}>
-          {intlLabel ? formatMessage(intlLabel) : name}
-        </Field.Label>
-        <QuillEditor
-          value={value || ''}
-          onChange={handleEditorChange}
-          disabled={disabled}
-          aria-label={intlLabel ? formatMessage(intlLabel) : name}
-        />
-        <Field.Hint>{description && formatMessage({ id: description })}</Field.Hint>
-        <Field.Error>{error}</Field.Error>
-      </Flex>
-    </Field.Root>
+    <div
+      ref={quillContainerRef}
+      style={{
+        height: '450px',
+        border: '1px solid #ccc',
+        backgroundColor: readOnly ? '#f5f5f5' : '#fff',
+      }}
+    />
   );
 };
 
-export { QuillEditorInput };
+export { QuillEditor };
