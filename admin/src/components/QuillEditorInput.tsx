@@ -26,7 +26,6 @@ const QuillEditorInput: React.FC<QuillEditorInputProps> = (props) => {
 
   const handleEditorChange = (content: string) => {
     // Directly pass the content to the onChange function
-    console.log(content);
     // @ts-ignore
     onChange({ target: { name, value: content } });
   };
