@@ -22,43 +22,6 @@ export default {
       },
       options: {
         // declare options here
-        base: [
-          {
-            intlLabel: {
-              id: 'strapi-plugin-quill-editor.output.label',
-              defaultMessage: 'Output type',
-            },
-            description: {
-              id: 'strapi-plugin-quill-editor.output.description',
-              defaultMessage: 'HTML or Markdown',
-            },
-            name: 'options.output',
-            type: 'select',
-            defaultValue: 'HTML',
-            options: [
-              {
-                key: 'html',
-                value: 'HTML',
-                metadatas: {
-                  intlLabel: {
-                    id: 'strapi-plugin-quill-editor.output.html.label',
-                    defaultMessage: 'HTML',
-                  },
-                },
-              },
-              {
-                key: 'markdown',
-                value: 'Markdown',
-                metadatas: {
-                  intlLabel: {
-                    id: 'strapi-plugin-quill-editor.output.markdown.label',
-                    defaultMessage: 'Markdown',
-                  },
-                },
-              },
-            ],
-          },
-        ],
       },
     });
 

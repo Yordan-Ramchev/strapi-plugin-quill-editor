@@ -4,8 +4,8 @@ import 'quill/dist/quill.snow.css'; // Import Quill's styles
 
 // Type the props explicitly
 interface QuillEditorProps {
-  value: string; // Content from the database
-  onChange: (content: string) => void; // Callback to send changes
+  value: string; // Markdown or HTML content (depending on your approach)
+  onChange: (content: string) => void; // Callback to send changes (Markdown or HTML)
   placeholder?: string;
   readOnly?: boolean;
   disabled?: boolean;
@@ -39,7 +39,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
         },
       });
 
-      // Set initial content
+      // Set initial content (HTML or Markdown converted to HTML)
       if (value) {
         quillInstanceRef.current.clipboard.dangerouslyPasteHTML(value);
       }
@@ -49,7 +49,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
         if (onChange && quillInstanceRef.current) {
           const currentContent = quillInstanceRef.current.root.innerHTML;
           if (currentContent !== value) {
-            onChange(currentContent); // Send changes back
+            onChange(currentContent); // Send changes back as HTML or Markdown
           }
         }
       });
@@ -57,12 +57,9 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   }, [onChange, placeholder, readOnly, value]);
 
   useEffect(() => {
-    if (quillInstanceRef.current) {
-      const currentContent = quillInstanceRef.current.root.innerHTML;
-      if (value !== currentContent) {
-        // Update content if value changes externally
-        quillInstanceRef.current.clipboard.dangerouslyPasteHTML(value || '');
-      }
+    if (quillInstanceRef.current && value !== quillInstanceRef.current.root.innerHTML) {
+      // Update content if value changes externally
+      quillInstanceRef.current.clipboard.dangerouslyPasteHTML(value || '');
     }
   }, [value]);
 
@@ -72,6 +69,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       style={{
         height: '450px',
         border: '1px solid #ccc',
+        borderRadius: '4px',
         backgroundColor: readOnly ? '#f5f5f5' : '#fff',
       }}
     />

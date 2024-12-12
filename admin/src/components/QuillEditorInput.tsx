@@ -5,9 +5,10 @@ import { Flex } from '@strapi/design-system';
 import { Field } from '@strapi/design-system';
 import { QuillEditor } from './QuillEditor';
 
+// Define the expected prop types for the QuillEditorInput component
 interface QuillEditorInputProps {
   attribute: {
-    type: string;
+    type: string; // adjust the type if necessary
   };
   name: string;
   disabled?: boolean;
@@ -19,21 +20,12 @@ interface QuillEditorInputProps {
 }
 
 const QuillEditorInput: React.FC<QuillEditorInputProps> = (props) => {
-  const {
-    attribute,
-    name,
-    disabled = false,
-    labelAction = null,
-    required = false,
-    description = '',
-    error = '',
-    intlLabel,
-  } = props;
-
+  const { attribute, name, disabled, labelAction, required, description, error, intlLabel } = props;
   const { onChange, value } = useField(name);
-  const { formatMessage }: IntlShape = useIntl();
+  const { formatMessage }: IntlShape = useIntl(); // Type the useIntl hook
 
   const handleEditorChange = (content: string) => {
+    // Directly pass the content to the onChange function
     onChange(content);
   };
 
@@ -48,14 +40,9 @@ const QuillEditorInput: React.FC<QuillEditorInputProps> = (props) => {
         <Field.Label action={labelAction} required={required}>
           {intlLabel ? formatMessage(intlLabel) : name}
         </Field.Label>
-        <QuillEditor
-          value={value || ''}
-          onChange={handleEditorChange}
-          disabled={disabled}
-          aria-label={intlLabel ? formatMessage(intlLabel) : name}
-        />
-        <Field.Hint>{description && formatMessage({ id: description })}</Field.Hint>
-        <Field.Error>{error}</Field.Error>
+        <QuillEditor value={value} onChange={handleEditorChange} disabled={disabled} />
+        <Field.Hint />
+        <Field.Error />
       </Flex>
     </Field.Root>
   );
